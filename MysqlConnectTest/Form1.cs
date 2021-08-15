@@ -14,22 +14,166 @@ namespace MysqlConnectTest
     public partial class MysqlTestForm : Form
     {
         string  strHost, strUserName, strPassword, strPort;
-        string  strFirstName, strLastName, strEmail, strGender, strID;
+        string  strFirstName, strLastName, strEmail, strGender, strID, strPhoneNumber;
 
         MySqlConnection mySqlConnect;   // Mysql Connection
+
+        private void cmbSearch_SelectedValueChanged(object sender, EventArgs e)
+        {
+            txtSearch.Text = "";
+            this.ActiveControl = txtSearch;
+        }
+
+        private void txtSearch_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            string strQuery;
+            string strSearchText;
+
+            if (Convert.ToInt32(e.KeyChar) == 13)
+            {
+                strSearchText = (txtSearch.Text).Trim('\r', '\n');
+
+                switch (cmbSearch.SelectedIndex)
+                {
+                    case 0:
+                        try
+                        {
+                            strQuery = "select * from users.tbl_users WHERE first_name LIKE '%" + strSearchText + "%' or last_name LIKE '%" + strSearchText + "%';";
+                            MySqlCommand MySqlCommand = new MySqlCommand(strQuery, mySqlConnect);
+                            mySqlConnect.Open();
+                            //For offline connection we weill use  MySqlDataAdapter class.  
+                            MySqlDataAdapter MyAdapter = new MySqlDataAdapter();
+                            MyAdapter.SelectCommand = MySqlCommand;
+
+                            DataTable dTable = new DataTable();
+
+                            int count = MyAdapter.Fill(dTable);
+
+                            if (count == 0)
+                            {
+                                MessageBox.Show("There is no 'username' you are looking for");
+                            }
+                            else if (count == 1)
+                            {
+                                MessageBox.Show(count.ToString() + " user found");
+                            }
+                            else
+                            {
+                                MessageBox.Show(count.ToString() + " users found");
+                            }
+
+                            dataGrdView.DataSource = dTable; // here i have assign dTable object to the dataGridView1 object to display data.  
+                            mySqlConnect.Close();
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message);
+                        }
+                        break;
+                    case 1:
+                        try
+                        {
+                            strQuery = "select * from users.tbl_users WHERE id = '" + strSearchText + "';";
+                            MySqlCommand MySqlCommand = new MySqlCommand(strQuery, mySqlConnect);
+                            mySqlConnect.Open();
+                            //For offline connection we weill use  MySqlDataAdapter class.  
+                            MySqlDataAdapter MyAdapter = new MySqlDataAdapter();
+                            MyAdapter.SelectCommand = MySqlCommand;
+                            DataTable dTable = new DataTable();
+                            int count = MyAdapter.Fill(dTable);
+
+                            if (count == 0)
+                            {
+                                MessageBox.Show("There is no 'id' you are looking for");
+                            }
+                            else if (count == 1)
+                            {
+                                MessageBox.Show(count.ToString() + " user found");
+                            }
+                            else
+                            {
+                                MessageBox.Show(count.ToString() + " users found");
+                            }
+
+                            dataGrdView.DataSource = dTable; // here i have assign dTable object to the dataGridView1 object to display data.  
+                            mySqlConnect.Close();
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message);
+                        }
+                        break;
+                    case 2:
+                        try
+                        {
+                            strQuery = "select * from users.tbl_users WHERE phone_number LIKE '%" + strSearchText + "%';";
+                            MySqlCommand MySqlCommand = new MySqlCommand(strQuery, mySqlConnect);
+                            mySqlConnect.Open();
+                            //For offline connection we weill use  MySqlDataAdapter class.  
+                            MySqlDataAdapter MyAdapter = new MySqlDataAdapter();
+                            MyAdapter.SelectCommand = MySqlCommand;
+                            DataTable dTable = new DataTable();
+                            int count = MyAdapter.Fill(dTable);
+
+                            if (count == 0)
+                            {
+                                MessageBox.Show("There is no 'PhoneNumber' you are looking for");
+                            }
+                            else if (count == 1)
+                            {
+                                MessageBox.Show(count.ToString() + " user found");
+                            }
+                            else
+                            {
+                                MessageBox.Show(count.ToString() + " users found");
+                            }
+
+                            dataGrdView.DataSource = dTable; // here i have assign dTable object to the dataGridView1 object to display data.  
+                            mySqlConnect.Close();
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message);
+                        }
+                        break;
+                }
+            }
+        }
 
         public MysqlTestForm()
         {
             InitializeComponent();
+
+            cmbGender.Items.Add("male");
+            cmbGender.Items.Add("female");
+            cmbGender.SelectedIndex = 0;
+
+            cmbSearch.Items.Add("UserName");
+            cmbSearch.Items.Add("ID");
+            cmbSearch.Items.Add("PhoneNumber");
+            cmbSearch.SelectedIndex = 0;
+
         }
 
-        private void dataGrdView_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void txtSearch_TextChanged(object sender, EventArgs e)
         {
+            if (cmbSearch.SelectedIndex == 2)
+            {
+                if (System.Text.RegularExpressions.Regex.IsMatch(txtSearch.Text, "[^0-9]"))
+                {
+                    MessageBox.Show("Please enter only numbers.");
+                    txtSearch.Text = txtSearch.Text.Remove(txtSearch.Text.Length - 1);
+                }
+            }
         }
 
-        private void dataGrdView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        private void txtPhoneNumber_TextChanged(object sender, EventArgs e)
         {
-
+            if (System.Text.RegularExpressions.Regex.IsMatch(txtPhoneNumber.Text, "[^0-9]"))
+            {
+                MessageBox.Show("Please enter only numbers.");
+                txtPhoneNumber.Text = txtPhoneNumber.Text.Remove(txtPhoneNumber.Text.Length - 1);
+            }
         }
 
         private void dataGrdView_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -41,7 +185,8 @@ namespace MysqlConnectTest
                 txtFirstName.Text = row.Cells[1].Value.ToString();
                 txtLastName.Text = row.Cells[2].Value.ToString();
                 txtEmail.Text = row.Cells[3].Value.ToString();
-                txtGender.Text = row.Cells[4].Value.ToString();
+                cmbGender.SelectedIndex = (row.Cells[4].Value.ToString() == "0" ? 0: 1);
+                txtPhoneNumber.Text = row.Cells[5].Value.ToString();
             }
 
         }
@@ -62,8 +207,8 @@ namespace MysqlConnectTest
             strFirstName = txtFirstName.Text;
             strLastName = txtLastName.Text;
             strEmail = txtEmail.Text;
-            strGender = txtGender.Text;
-
+            strGender = cmbGender.SelectedIndex.ToString();
+            strPhoneNumber = txtPhoneNumber.Text;
         }
 
         public void SetMysqlConnection()
@@ -77,6 +222,7 @@ namespace MysqlConnectTest
 
         private void btnRead_Click(object sender, EventArgs e)
         {
+            txtSearch.Text = "";
             try
             {
                 GetValueFromText();
@@ -108,7 +254,7 @@ namespace MysqlConnectTest
                 SetMysqlConnection();
 
                 //This is my insert query in which i am taking input from the user through windows forms  
-                string strQuery = "insert into users.tbl_users(first_name,last_name,email,gender) values('" + strFirstName + "','" + strLastName + "','" + strEmail + "','" + strGender + "');";
+                string strQuery = "insert into users.tbl_users(first_name,last_name,email,gender,phone_number) values('" + strFirstName + "','" + strLastName + "','" + strEmail + "','" + strGender + "','" + strPhoneNumber + "');";
                 
                 //This is command class which will handle the query and connection object.  
                 MySqlCommand MySqlCommand = new MySqlCommand(strQuery, mySqlConnect);
@@ -138,7 +284,7 @@ namespace MysqlConnectTest
                 SetMysqlConnection();
 
                 //This is my update query in which i am taking input from the user through windows forms and update the record.  
-                string strQuery = "update users.tbl_users set first_name='" + strFirstName + "',last_name='" + strLastName + "',email='" + strEmail + "',gender='" + strGender + "' where id='" + strID + "';";
+                string strQuery = "update users.tbl_users set first_name='" + strFirstName + "',last_name='" + strLastName + "',email='" + strEmail + "',gender='" + strGender + "',phone_number='" + strPhoneNumber + "' where id='" + strID + "';";
                 //This is  MySqlConnection here i have created the object and pass my connection string.  
 
                 MySqlCommand MyCommand = new MySqlCommand(strQuery, mySqlConnect);
@@ -181,7 +327,8 @@ namespace MysqlConnectTest
                 txtFirstName.Text = "";
                 txtLastName.Text = "";
                 txtEmail.Text = "";
-                txtGender.Text = "";
+                cmbGender.SelectedIndex = 0;
+                txtPhoneNumber.Text = "";
 
                 while (MyReader.Read())
                 {
