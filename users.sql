@@ -1,74 +1,47 @@
--- phpMyAdmin SQL Dump
--- version 5.0.3
--- https://www.phpmyadmin.net/
---
--- Host: 127.0.0.1
--- Generation Time: Aug 13, 2021 at 05:48 PM
--- Server version: 10.4.14-MariaDB
--- PHP Version: 7.4.11
-
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
---
--- Database: `users`
---
-
+-- --------------------------------------------------------
+-- Host:                         127.0.0.1
+-- Server version:               10.4.14-MariaDB - mariadb.org binary distribution
+-- Server OS:                    Win64
+-- HeidiSQL Version:             11.2.0.6213
 -- --------------------------------------------------------
 
---
--- Table structure for table `tbl_users`
---
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET NAMES utf8 */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-CREATE TABLE `tbl_users` (
-  `id` int(10) UNSIGNED NOT NULL,
+
+-- Dumping database structure for users
+CREATE DATABASE IF NOT EXISTS `users` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
+USE `users`;
+
+-- Dumping structure for table users.tbl_users
+CREATE TABLE IF NOT EXISTS `tbl_users` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `first_name` varchar(50) NOT NULL,
   `last_name` varchar(50) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `gender` varchar(10) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Users Table \r\n// id, first name, last name, email, gender';
+  `gender` tinyint(2) NOT NULL DEFAULT 0,
+  `phone_number` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COMMENT='Users Table \r\n// id, first name, last name, email, gender';
 
---
--- Dumping data for table `tbl_users`
---
+-- Dumping data for table users.tbl_users: ~7 rows (approximately)
+/*!40000 ALTER TABLE `tbl_users` DISABLE KEYS */;
+INSERT INTO `tbl_users` (`id`, `first_name`, `last_name`, `email`, `gender`, `phone_number`) VALUES
+	(1, 'James', 'Smith', 'jamesmith@test.com', 0, '1234'),
+	(2, 'John', 'Smith', 'johnsmith@test.com', 0, '12345'),
+	(3, 'werwr', 'xv', 'sf4', 1, '111'),
+	(4, 'jam', 'slow', 'slow@gmail.com', 0, '222'),
+	(5, 'camel', 'challenge', 'camel@test.com', 0, '333'),
+	(13, '12345', 'qwe', 'qewq', 0, '444'),
+	(14, 'fist', 'name', 'first@test.com', 1, '123456');
+/*!40000 ALTER TABLE `tbl_users` ENABLE KEYS */;
 
-INSERT INTO `tbl_users` (`id`, `first_name`, `last_name`, `email`, `gender`) VALUES
-(1, 'James', 'Smith', 'jamesmith@test.com', 'male'),
-(2, 'John', 'Smith', 'johnsmith@test.com', 'female'),
-(3, 'tony', 'blake', 'tony@tony.com', 'male'),
-(4, 'jam', 'slow', 'slow@gmail.com', 'female'),
-(5, 'camel', 'challenge', 'camel@test.com', 'male'),
-(12, 'camel', 'challenge', 'camel@test.com', 'male');
-
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `tbl_users`
---
-ALTER TABLE `tbl_users`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `id` (`id`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `tbl_users`
---
-ALTER TABLE `tbl_users`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
-COMMIT;
-
+/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
+/*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=IFNULL(@OLD_SQL_NOTES, 1) */;
